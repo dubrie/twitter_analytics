@@ -6,56 +6,23 @@ require 'time'
 
 require './lib/tweet'
 require './lib/day'
+require './lib/hour'
+require './lib/stats_base'
 require './lib/day_stats'
+require './lib/hour_stats'
+
 require './lib/ascii_chart'
 
 tweet_file = 'tweet_activity_metrics.csv'
-
-# 2014-07-11 21:34 +0000
-date_format = '%Y-%m-%d %H:%M %z'
-
 days = DayStats.new
-
-tweets = []
-engagements = 0
-impressions = 0
-
-hours_of_day = {}
+hours = HourStats.new
 
 CSV.foreach(tweet_file, :headers => true) do |row|
-    tweets << row
 
     tweet = Tweet.new(row)
 
-    tweet_time = DateTime.strptime(row['time'], date_format).to_time.getlocal
-    num_engagements = row['engagements'].to_i
-    num_impressions = row['impressions'].to_i
-
-    tweet_data = {
-        :text => row['Tweet text'],
-        :date => tweet_time,
-        :impressions => num_impressions,
-        :engagements => num_engagements,
-        :permalink => row['Tweet permalink'],
-        :retweets => row['retweets'].to_i,
-        :replies => row['replies'].to_i,
-        :favorites => row['favorites'].to_i,
-        :profile_clicks => row['user profile clicks'].to_i,
-        :url_clicks => row['url clicks'].to_i,
-        :hashtag_clicks => row['hashtag clicks'].to_i,
-        :detail_clicks => row['detail expands'].to_i        
-    }
-
-    days.add_tweet(tweet_time.wday, tweet)
-
-    if !hours_of_day.has_key?(tweet_time.hour)
-        hours_of_day[tweet_time.hour] = []
-    end
-
-    hours_of_day[tweet_time.hour] << tweet_data
-
-    engagements += num_engagements
-    impressions += num_impressions
+    days.add_tweet(tweet.date.wday, tweet)
+    hours.add_tweet(tweet.date.hour, tweet)
 end
 
 puts ""
@@ -78,61 +45,34 @@ puts "  > #{days.max_impression_tweet.date} - #{days.max_impression_tweet.text}"
 puts ""
 puts "----------------------------------------------"
 
-chart = AsciiChart.new(days.tweets_per_day_hash)
+chart = AsciiChart.new(days.get_charting_data("day_of_week", "total_tweets"))
 chart.title = "Tweets by Day"
 chart.legend = "Tweets"
-chart.scale_factor = days.scale_factor
-
 chart.render
 
 puts ""
-puts "----------------------------------------------"
-puts "HOUR BREAKDOWN"
-hourly_engagements = {}
-hourly_impressions = {}
 
-hours_of_day.keys.sort!
-hours_of_day.sort.map do |idx, hour|
-    puts "Hour #{idx}"
-    puts "    tweets: #{hour.size}"
-    hTweets = hour.size
-    hEngagements = 0
-    hImpressions = 0
-    hour.each do |tweet|
-        # Calculate engagement/impressions for this hour of the day
-        hEngagements += tweet[:engagements]
-        hImpressions += tweet[:impressions]
-    end
-    puts "    engagements: #{hEngagements} (#{hEngagements/hTweets}/tweet)"
-    puts "    impressions: #{hImpressions} (#{hImpressions/hTweets}/tweet)"
+chart = AsciiChart.new(hours.get_charting_data("display_hour", "total_tweets"))
+chart.title = "Tweets by Hour"
+chart.legend = "Tweets"
+chart.render
 
-    hourly_engagements["#{idx}"] = {
-        :rate => hEngagements/hTweets,
-        :total => hEngagements,
-        :tweets => hTweets,
-        :percent_total => '%.2f' % ((hEngagements.to_f/engagements.to_f)*100)
-    }
-
-    hourly_impressions["#{idx}"] = {
-        :rate => hImpressions/hTweets,
-        :total => hImpressions,
-        :tweets => hTweets,
-        :percent_total => '%.2f' % ((hImpressions.to_f/impressions.to_f)*100)
-    }
-
-end
 puts ""
 
-puts "top 10 engagement hours"
-hourly_engagements.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
-    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total engagements)"
-end
+chart = AsciiChart.new(hours.get_charting_data("display_hour", "total_impressions"))
+chart.title = "Impressions by Hour"
+chart.legend = "Impressions"
+chart.render
+
 puts ""
-puts "top 10 impression hours"
-hourly_impressions.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
-    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total impressions)"
-end
 
-
-
+#puts "top 10 engagement hours"
+#hourly_engagements.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
+#    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total engagements)"
+#end
+#puts ""
+#puts "top 10 impression hours"
+#hourly_impressions.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
+#    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total impressions)"
+#end
 
