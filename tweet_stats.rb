@@ -40,4 +40,6 @@ end
 chart = AsciiChartMultiDimension.new(chart_data.get_charting_data("total_impressions"))
 chart.title = "Weekly Points In Time"
 chart.legend = "Impressions"
+chart.as_values = false
+chart.column_width = 3
 chart.render
