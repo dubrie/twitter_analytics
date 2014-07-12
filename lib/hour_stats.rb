@@ -10,4 +10,7 @@ class HourStats < StatsBase
     end
   end
 
+  def get_charting_data(chart_value)
+    super("display_hour",chart_value)
+  end
 end

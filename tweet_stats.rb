@@ -5,6 +5,7 @@ require 'date'
 require 'time'
 
 require './lib/tweet'
+require './lib/unit_base'
 require './lib/day'
 require './lib/hour'
 require './lib/stats_base'
@@ -45,34 +46,64 @@ puts "  > #{days.max_impression_tweet.date} - #{days.max_impression_tweet.text}"
 puts ""
 puts "----------------------------------------------"
 
-chart = AsciiChart.new(days.get_charting_data("day_of_week", "total_tweets"))
+chart = AsciiChart.new(days.get_charting_data("total_tweets"))
 chart.title = "Tweets by Day"
 chart.legend = "Tweets"
 chart.render
 
 puts ""
 
-chart = AsciiChart.new(hours.get_charting_data("display_hour", "total_tweets"))
+chart = AsciiChart.new(hours.get_charting_data("total_tweets"))
 chart.title = "Tweets by Hour"
 chart.legend = "Tweets"
 chart.render
 
 puts ""
 
-chart = AsciiChart.new(hours.get_charting_data("display_hour", "total_impressions"))
+chart = AsciiChart.new(hours.get_charting_data("total_impressions"))
 chart.title = "Impressions by Hour"
 chart.legend = "Impressions"
 chart.render
 
 puts ""
 
-#puts "top 10 engagement hours"
-#hourly_engagements.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
-#    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total engagements)"
-#end
-#puts ""
-#puts "top 10 impression hours"
-#hourly_impressions.sort_by{|hour,amt| amt[:rate]}.reverse.first(10).each do |idx, val|
-#    puts "  Hour #{idx} - #{val[:rate]}/tweet (#{val[:percent_total]}% total impressions)"
-#end
+chart = AsciiChart.new(days.get_charting_data("total_impressions"))
+chart.title = "Top Days for Impressions"
+chart.legend = "Impressions"
+chart.render
+
+puts ""
+
+chart = AsciiChart.new(hours.get_charting_data("total_impressions"))
+chart.title = "Top Hours for Impressions"
+chart.legend = "Impressions"
+chart.render
+
+puts ""
+
+chart = AsciiChart.new(days.get_charting_data("total_engagements"))
+chart.title = "Top Days for Engagements"
+chart.legend = "Engagements"
+chart.render
+
+puts ""
+
+chart = AsciiChart.new(hours.get_charting_data("total_engagements"))
+chart.title = "Top Hours for Engagements"
+chart.legend = "Engagements"
+chart.render
+
+puts ""
+
+puts "Top 5 engagement hours"
+hours.data.sort_by{|hour,amt| amt.total_engagements}.reverse.first(5).each do |idx, val|
+    percent_total = '%.2f' % ((val.total_engagements.to_f/hours.total_engagements.to_f)*100)
+    puts "  Hour #{idx} - #{val.total_engagements}/tweet (#{percent_total}% total)"
+end
+puts ""
+puts "Top 5 impression hours"
+hours.data.sort_by{|hour,amt| amt.total_impressions}.reverse.first(5).each do |idx, val|
+    percent_total = '%.2f' % ((val.total_impressions.to_f/hours.total_impressions.to_f)*100)
+    puts "  Hour #{idx} - #{val.total_impressions}/tweet (#{percent_total}% total)"
+end
 

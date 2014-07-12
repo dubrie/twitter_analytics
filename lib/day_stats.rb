@@ -29,6 +29,10 @@ class DayStats < StatsBase
     end
   end
 
+  def get_charting_data(chart_value)
+    super("day_of_week",chart_value)
+  end
+
   def max_tweet_day
     max = 0
     @days.values.each do |day|
