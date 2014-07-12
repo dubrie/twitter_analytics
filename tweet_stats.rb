@@ -1,41 +1,32 @@
+#!/usr/bin/env ruby
+
 require 'csv'
 require 'date'
 require 'time'
+
+require './lib/tweet'
+require './lib/day'
+require './lib/day_stats'
+require './lib/ascii_chart'
 
 tweet_file = 'tweet_activity_metrics.csv'
 
 # 2014-07-11 21:34 +0000
 date_format = '%Y-%m-%d %H:%M %z'
 
-days = {
-    '0' => "Sun",
-    '1' => "Mon",
-    '2' => "Tue",
-    '3' => "Wed",
-    '4' => "Thu",
-    '5' => "Fri",
-    '6' => "Sat"
-}
+days = DayStats.new
 
 tweets = []
 engagements = 0
 impressions = 0
 
-max_engagement = 0
-max_engagement_tweet = nil
-max_impression = 0
-max_impression_tweet = nil
-
 hours_of_day = {}
-days_of_week = {}
-
-# Pick some date way in the future
-min_date = DateTime.strptime("2222-01-01 00:00 +0000", date_format).to_time.getlocal
-# Just take the epoch date
-max_date = DateTime.strptime("1970-01-01 00:00 +0000", date_format).to_time.getlocal
 
 CSV.foreach(tweet_file, :headers => true) do |row|
     tweets << row
+
+    tweet = Tweet.new(row)
+
     tweet_time = DateTime.strptime(row['time'], date_format).to_time.getlocal
     num_engagements = row['engagements'].to_i
     num_impressions = row['impressions'].to_i
@@ -55,11 +46,7 @@ CSV.foreach(tweet_file, :headers => true) do |row|
         :detail_clicks => row['detail expands'].to_i        
     }
 
-    if !days_of_week.has_key?(tweet_time.wday)
-        days_of_week[tweet_time.wday] = []
-    end
-
-    days_of_week[tweet_time.wday] << tweet_data
+    days.add_tweet(tweet_time.wday, tweet)
 
     if !hours_of_day.has_key?(tweet_time.hour)
         hours_of_day[tweet_time.hour] = []
@@ -67,55 +54,39 @@ CSV.foreach(tweet_file, :headers => true) do |row|
 
     hours_of_day[tweet_time.hour] << tweet_data
 
-    if tweet_time < min_date
-        min_date = tweet_time
-    end
-
-    if max_date < tweet_time
-        max_date = tweet_time
-    end
-
     engagements += num_engagements
-
-    if num_engagements > max_engagement
-        max_engagement = num_engagements
-        max_engagement_tweet = row
-        max_engagement_tweet['time'] = tweet_time
-    end
-  
     impressions += num_impressions
-
-    if num_impressions > max_impression
-        max_impression = num_impressions
-        max_impression_tweet = row
-        max_impression_tweet['time'] = tweet_time
-    end
 end
 
-puts "Tweet Range: #{min_date} -- #{max_date}"
-puts "Tweets: #{tweets.size}"
-puts "Total Impressions: #{impressions}"
-puts "Total Engagements: #{engagements}"
-puts "Impressions/Tweet: #{impressions/tweets.size}"
-puts "engagements/Tweet: #{engagements/tweets.size}"
-
-puts "max engagement: #{max_engagement}"
-puts "  > #{max_engagement_tweet['time']} - #{max_engagement_tweet['Tweet text']}"
 puts ""
-puts "max impression: #{max_impression}"
-puts "  > #{max_impression_tweet['time']} - #{max_impression_tweet['Tweet text']}"
+puts "----------------------------------------------"
+puts "Tweets: #{days.total_tweets}"
+puts "Dates: #{days.num_days} days (#{days.start_date} - #{days.end_date})"
+puts "Total Impressions: #{days.total_impressions}"
+puts "Total Engagements: #{days.total_engagements}"
+puts "Impressions/Tweet: #{days.impressions_per_tweet}"
+puts "engagements/Tweet: #{days.engagements_per_tweet}"
+puts "----------------------------------------------"
 puts ""
-
-# TODO: Make this a chart instead of just text
-puts "DAY BREAKDOWN"
-days_of_week.keys.sort!
-days_of_week.sort.map do |idx, day|
-    dow = days["#{idx}"]
-    puts "#{dow}) total tweets: #{day.size}"
-    prevDay = idx.to_i+1
-end
+puts "----------------------------------------------"
+puts "TOP TWEETS"
+puts "Engagement: #{days.max_engagement_tweet.engagements}"
+puts "  > #{days.max_engagement_tweet.date} - #{days.max_engagement_tweet.text}"
 puts ""
+puts "Impression: #{days.max_impression_tweet.impressions}"
+puts "  > #{days.max_impression_tweet.date} - #{days.max_impression_tweet.text}"
+puts ""
+puts "----------------------------------------------"
 
+chart = AsciiChart.new(days.tweets_per_day_hash)
+chart.title = "Tweets by Day"
+chart.legend = "Tweets"
+chart.scale_factor = days.scale_factor
+
+chart.render
+
+puts ""
+puts "----------------------------------------------"
 puts "HOUR BREAKDOWN"
 hourly_engagements = {}
 hourly_impressions = {}
