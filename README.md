@@ -9,6 +9,11 @@ The code base consists of multiple classes in the /lib path to help process the 
 
     ruby tweet_stats.rb
     
+For examples of some other charts and metrics you can do, see the example ruby file:
+
+    ruby tweet_stats_examples.rb
+    
+
 Charts
 ======
 You can produce multiple types of charts for your Twitter data including:
