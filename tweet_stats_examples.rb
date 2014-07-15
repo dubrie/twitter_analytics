@@ -29,6 +29,26 @@ CSV.foreach(tweet_file, :headers => true) do |row|
     hours.add_tweet(tweet.date.hour, tweet)
 end
 
+chart = AsciiChart.new(days.get_charting_data("total_tweets"))
+chart.title = "Tweets by Day"
+chart.legend = "Tweets"
+chart.render
+
+puts ""
+
+chart = AsciiChart.new(days.get_charting_data("total_impressions"))
+chart.title = "Top Days for Impressions"
+chart.legend = "Impressions"
+chart.render
+
+puts ""
+
+chart = AsciiChart.new(days.get_charting_data("total_engagements"))
+chart.title = "Top Days for Engagements"
+chart.legend = "Engagements"
+chart.render
+
+puts ""
 
 puts ""
 puts "----------------------------------------------"
@@ -43,19 +63,12 @@ puts ""
 puts "----------------------------------------------"
 puts "TOP TWEETS"
 puts "Engagement: #{days.max_engagement_tweet.engagements}"
-puts "  > #{days.max_engagement_tweet.date} - #{days.max_engagement_tweet.text}"
+puts "  > #{days.max_engagement_tweet.date} - #{days.max_engagement_tweet.text} #{days.max_engagement_tweet.permalink}"
 puts ""
 puts "Impression: #{days.max_impression_tweet.impressions}"
-puts "  > #{days.max_impression_tweet.date} - #{days.max_impression_tweet.text}"
+puts "  > #{days.max_impression_tweet.date} - #{days.max_impression_tweet.text} #{days.max_impression_tweet.permalink}"
 puts ""
 puts "----------------------------------------------"
-
-chart = AsciiChart.new(days.get_charting_data("total_tweets"))
-chart.title = "Tweets by Day"
-chart.legend = "Tweets"
-chart.render
-
-puts ""
 
 chart = AsciiChart.new(hours.get_charting_data("total_tweets"))
 chart.title = "Tweets by Hour"
@@ -64,23 +77,9 @@ chart.render
 
 puts ""
 
-chart = AsciiChart.new(days.get_charting_data("total_impressions"))
-chart.title = "Top Days for Impressions"
-chart.legend = "Impressions"
-chart.render
-
-puts ""
-
 chart = AsciiChart.new(hours.get_charting_data("total_impressions"))
 chart.title = "Top Hours for Impressions"
 chart.legend = "Impressions"
-chart.render
-
-puts ""
-
-chart = AsciiChart.new(days.get_charting_data("total_engagements"))
-chart.title = "Top Days for Engagements"
-chart.legend = "Engagements"
 chart.render
 
 puts ""
