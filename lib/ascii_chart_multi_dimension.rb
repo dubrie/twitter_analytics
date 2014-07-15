@@ -87,5 +87,7 @@ class AsciiChartMultiDimension < AsciiChart
 
             prev_day = key_parts[0]
         end
+
+        puts get_row_def % display_array.to_a
     end
 end
