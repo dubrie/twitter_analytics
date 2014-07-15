@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  root 'upload#index'
+
   get 'upload/index'
 
   post 'upload/parse'

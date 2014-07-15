@@ -1,4 +1,4 @@
-class StatsBase < ActiveRecord::Base
+class StatsBase
 
   attr_accessor :data
 
