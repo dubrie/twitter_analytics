@@ -5,13 +5,13 @@ A crude but deeper dive into the Twitter analytics data available at https://ana
 
 Usage
 =====
-The code base consists of multiple classes in the /lib path to help process the data and a tweet_stats.rb file to parse the CSV and print out a chart on the command line.  To use the script, copy the `tweet_activity_metrics.csv` export from the Twitter analytics dashboard into the root path of the repo and run:
+The code base consists of multiple classes in the /cli/lib path to help process the data and a tweet_stats.rb file to parse the CSV and print out a chart on the command line.  To use the script, copy the `tweet_activity_metrics.csv` export from the Twitter analytics dashboard into the /cli path of the repo and run:
 
-    ruby tweet_stats.rb
+    twitter_analytics/cli $> ruby tweet_stats.rb
     
 For examples of some other charts and metrics you can do, see the example ruby file:
 
-    ruby tweet_stats_examples.rb
+    twitter_analytics/cli $> ruby tweet_stats_examples.rb
     
 
 Charts
