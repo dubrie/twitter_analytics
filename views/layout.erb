@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twheatmaps</title>
+
+    <style>
+      body {
+          font-family: "Helvetica Neue",Arial,sans-serif;
+          font-size: 14px;
+      }
+
+      #upload-form {
+        padding: 10px;
+      }
+
+      .analytic-object {
+        color: #555;
+        float: left;
+        margin-left: 30px;
+      }
+
+      .analytic-object span {
+        font-size: 34pt;
+        font-color: #000;
+        font-weight: lighter;
+        display: block;
+      }
+
+      #total-impressions {
+      }
+
+      #total-engagements {
+      }
+
+      #total-tweets {
+      }
+
+      #date-range {
+      }
+
+      #optimal-post {
+        clear: both;
+        margin: 30px auto;
+        padding-top: 50px;
+        text-align: left;
+        font-size: 18pt;
+      }
+
+      #optimal-post b {
+        font-size: 28pt;
+      }
+
+      rect.bordered {
+        stroke: #E6E6E6;
+        stroke-width:2px;   
+      }
+
+      text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+      }
+
+      text.axis-workweek {
+        fill: #000;
+      }
+
+      text.axis-worktime {
+        fill: #000;
+      }
+
+    </style>
+
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>
