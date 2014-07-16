@@ -1,4 +1,4 @@
-class Tweet < ActiveRecord::Base
+class Tweet
     
     attr_accessor :text
     attr_accessor :date

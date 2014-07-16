@@ -1,4 +1,4 @@
-class AsciiChart < ActiveRecord::Base
+class AsciiChart
 
     attr_accessor :title
     attr_accessor :legend
