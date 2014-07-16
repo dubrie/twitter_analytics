@@ -1,4 +1,4 @@
-class UnitBase
+class UnitBase < ActiveRecord::Base
   attr_accessor :total_tweets
   attr_accessor :total_engagements
   attr_accessor :total_impressions

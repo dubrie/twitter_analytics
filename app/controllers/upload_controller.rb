@@ -1,5 +1,4 @@
-require 'csv'
-require 'json'
+require 'CSV'
 
 class UploadController < ApplicationController
     def index
