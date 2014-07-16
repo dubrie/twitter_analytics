@@ -8,6 +8,7 @@ set :root, File.dirname(__FILE__)
 
 require './lib/unit_base'
 require './lib/stats_base'
+require './lib/ascii_chart'
 
 configure do
   $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/lib")
