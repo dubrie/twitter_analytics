@@ -81,5 +81,4 @@ test:
 production:
   <<: *default
   database: twheatmaps_production
-  username: twheatmaps
   password: <%= ENV['TWHEATMAPS_DATABASE_PASSWORD'] %>
