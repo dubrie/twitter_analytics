@@ -39,8 +39,8 @@
           legendElementWidth = gridSize*2,
           buckets = 5,
           colors = ["#ffffff","#edf8b1","#7fcdbb","#1d91c0","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-          dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-          times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+          dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+          times = ["12a", "1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12p", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p"];
 
       d3.csv("public/<%= @stats_file %>",
         function(d) {
@@ -66,26 +66,30 @@
               .enter().append("text")
                 .text(function (d) { return d; })
                 .attr("x", 0)
-                .attr("y", function (d, i) { return i * gridSize; })
+                .attr("y", function (d, i) { 
+                  return i * gridSize; 
+                })
                 .style("text-anchor", "end")
                 .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+                .attr("class", function (d, i) { return ((i >= 1 && i <= 5) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 
           var timeLabels = svg.selectAll(".timeLabel")
               .data(times)
               .enter().append("text")
                 .text(function(d) { return d; })
-                .attr("x", function(d, i) { return i * gridSize; })
+                .attr("x", function(d, i) { 
+                  return i * gridSize; 
+                })
                 .attr("y", 0)
                 .style("text-anchor", "middle")
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
-                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+                .attr("class", function(d, i) { return ((i >= 8 && i <= 18) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
           var heatMap = svg.selectAll(".hour")
               .data(data)
               .enter().append("rect")
-              .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-              .attr("y", function(d) { return (d.day - 1) * gridSize; })
+              .attr("x", function(d) { return (d.hour - 1) * gridSize + gridSize; })
+              .attr("y", function(d) { return (d.day - 1) * gridSize + gridSize; })
               .attr("rx", 4)
               .attr("ry", 4)
               .attr("class", "hour bordered")
