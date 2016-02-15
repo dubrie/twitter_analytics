@@ -3,12 +3,6 @@ twitter_analytics
 
 A crude but deeper dive into the Twitter analytics data available at https://analytics.twitter.com. This repo supports creating of charts based on your Twitter analytics export data file.
 
-Demo
-====
-You can view a live demo where you can upload your `tweet_activity_metrics.csv` file here:
-
-    http://twheatmaps.herokuapp.com/
-
 
 Usage
 =====
